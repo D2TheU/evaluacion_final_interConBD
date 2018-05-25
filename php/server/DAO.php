@@ -37,13 +37,13 @@ class DAO
                 );
             } else {
                 $response = array(
-                    'result'=> 'fail',
+                    'result'=> 'failed',
                     'message' => 'Password and username do not match.'
                 );
             }
         } else {
             $response = array(
-                'result'=> 'fail',
+                'result'=> 'failed',
                 'message' => 'Username and password do not match.'
             );
         }
@@ -77,8 +77,46 @@ class DAO
             );
         } else {
             $response = array(
-                'result'=> 'fail',
+                'result'=> 'failed',
                 'message' => 'Account already exists.'
+            );
+        }
+        $this->conn = null;
+        return $response;
+    }
+
+    public function addEvent($username, $title, $startDate, $allDay, $endDate, $startTime, $endTime)
+    {
+        $this->connectDB();
+
+        $sql="SELECT * FROM tblusers WHERE chrEmail = :email LIMIT 1;";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':email', $username, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $response = array();
+        if ($stmt->rowCount()) {
+            $sql="INSERT INTO tblevents (chrFKUserEmail, chrTitle, dtdStart, chrStartTime, dtdEnd, chrEndTime, intAllDay)
+            VALUES
+            (:email, :title, :startDate, :startTime, :endDate, :endTime, :allDay);";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':email', $username, PDO::PARAM_STR);
+            $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+            $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
+            $stmt->bindParam(':startTime', $startTime, PDO::PARAM_STR);
+            $stmt->bindParam(':endDate', $endDate, PDO::PARAM_STR);
+            $stmt->bindParam(':endTime', $endTime, PDO::PARAM_STR);
+            $stmt->bindParam(':allDay', $allDay, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $response = array(
+                'result'=> 'ok',
+                'message' => 'Event added.'
+            );
+        } else {
+            $response = array(
+                'result'=> 'failed',
+                'message' => 'User not found.'
             );
         }
         $this->conn = null;
