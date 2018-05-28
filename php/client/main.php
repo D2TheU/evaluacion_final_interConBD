@@ -12,7 +12,7 @@
         <title>Agenda</title>
         <link rel="stylesheet" href="css/foundation.min.css">
         <link rel="stylesheet" href="css/fullcalendar.min.css">
-        <link rel="stylesheet" href="css/fullcalendar.print.css">
+        <!-- <link rel="stylesheet" href="css/fullcalendar.print.css"> -->
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <link rel="stylesheet" href="css/main.css">
@@ -46,7 +46,7 @@
                             </div>
                             <div class="small-8 columns">
                                 <label>Fecha inicio
-                                    <input type="text" id="start_date">
+                                    <input type="text" id="start_date" autocomplete="off">
                                 </label>
                             </div>
                             <fieldset class="large-4 columns" id="dia-set">
@@ -54,17 +54,17 @@
                             </fieldset>
                             <div class="small-8 columns">
                                 <label>Fecha fin
-                                    <input type="text" id="end_date">
+                                    <input type="text" id="end_date" autocomplete="off">
                                 </label>
                             </div>
                             <div class="small-6 columns">
                                 <label>Hora de inicio
-                                    <input type="text" class="timepicker" id="start_hour">
+                                    <input type="text" class="timepicker" id="start_hour" autocomplete="off">
                                 </label>
                             </div>
                             <div class="small-6 columns">
                                 <label>Hora fin
-                                    <input type="text" class="timepicker" id="end_hour">
+                                    <input type="text" class="timepicker" id="end_hour" autocomplete="off">
                                 </label>
                             </div>
                             <div class="small-12 columns btn-cont-enviar">
