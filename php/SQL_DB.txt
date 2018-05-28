@@ -1,0 +1,26 @@
+SQL para crear tabla de usuarios:
+
+CREATE TABLE `tblusers` (
+  `chrEmail` varchar(45) COLLATE utf8_bin NOT NULL,
+  `chrFullName` varchar(45) COLLATE utf8_bin NOT NULL,
+  `chrPassword` varchar(100) COLLATE utf8_bin NOT NULL,
+  `dtdBirth` date NOT NULL,
+  PRIMARY KEY (`chrEmail`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+SQL para crear table de eventos;
+
+CREATE TABLE `tblevents` (
+  `intIDEvent` int(11) NOT NULL AUTO_INCREMENT,
+  `chrTitle` varchar(45) COLLATE utf8_bin NOT NULL,
+  `chrFKUserEmail` varchar(45) COLLATE utf8_bin NOT NULL DEFAULT '',
+  `dtdStart` date NOT NULL,
+  `dtdEnd` date DEFAULT NULL,
+  `chrStartTime` varchar(11) COLLATE utf8_bin DEFAULT NULL,
+  `chrEndTime` varchar(11) COLLATE utf8_bin DEFAULT NULL,
+  `intAllDay` int(1) NOT NULL,
+  `intActivo` int(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`intIDEvent`),
+  KEY `chrFKUserEmail` (`chrFKUserEmail`),
+  CONSTRAINT `tblevents_chremail` FOREIGN KEY (`chrFKUserEmail`) REFERENCES `tblusers` (`chrEmail`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
