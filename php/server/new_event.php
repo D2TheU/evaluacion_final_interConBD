@@ -12,9 +12,9 @@ if (!isset($_POST['titulo']) || !isset($_POST['start_date']) || !isset($_POST['a
 $title = $_POST['titulo'];
 $startDate = $_POST['start_date'];
 $allDay = $_POST['allDay'] == 'true' ? 1 : 0;
-$endDate = $_POST['end_date'];
-$startTime = $_POST['start_hour'];
-$endTime = $_POST['end_hour'];
+$endDate = $_POST['end_date'] == '' ? '0000-00-00' : $_POST['end_date'];
+$startTime = $_POST['start_hour'] == '' ? '00:00' : $_POST['start_hour'];
+$endTime = $_POST['end_hour'] == '' ? '00:00' : $_POST['end_hour'];
 
 if (!isDate($startDate) || (!isDate($endDate) && $allDay == 0)) {
     echo json_encode(array('result' => 'failed', 'message' => 'Incorrect date format.'));

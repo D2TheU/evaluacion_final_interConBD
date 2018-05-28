@@ -12,10 +12,10 @@ class EventsManager {
             contentType: false,
             type: 'GET',
             success: (data) => {
-                if (data.msg == "OK") {
-                    this.poblarCalendario(data.eventos)
+                if (data.result == "ok") {
+                    this.poblarCalendario(data.events)
                 } else {
-                    alert(data.msg)
+                    alert(data.message)
                 }
             },
             error: function() {
@@ -30,7 +30,7 @@ class EventsManager {
                 center: 'title',
                 right: 'month,agendaWeek,basicDay'
             },
-            defaultDate: '2016-11-01',
+            defaultDate: new Date(),
             navLinks: true,
             editable: true,
             eventLimit: true,
@@ -83,7 +83,7 @@ class EventsManager {
             data: form_data,
             type: 'POST',
             success: (data) => {
-                if (data.result == "OK") {
+                if (data.result == "ok") {
                     alert('Se ha añadido el evento exitosamente')
                     if (document.getElementById('allDay').checked) {
                         $('.calendario').fullCalendar('renderEvent', {
@@ -99,8 +99,9 @@ class EventsManager {
                             end: $('#end_date').val() + " " + $('#end_hour').val()
                         })
                     }
+                    initForm()
                 } else {
-                    console.log(data);
+                    alert(data.message)
                 }
             },
             error: function() {
@@ -205,4 +206,5 @@ function initForm() {
             $('.timepicker, #end_date').removeAttr("disabled")
         }
     })
+    $('#start_hour, #end_hour').val('')
 }

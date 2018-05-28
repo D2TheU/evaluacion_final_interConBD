@@ -17,13 +17,13 @@ class DAO
         $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
-    public function verifyLogin($username, $password)
+    public function verifyLogin($email, $password)
     {
         $this->connectDB();
 
         $sql="SELECT chrPassword AS password FROM tblusers WHERE chrEmail = :email LIMIT 1;";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':email', $username, PDO::PARAM_STR);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
 
         $response = array();
@@ -85,13 +85,43 @@ class DAO
         return $response;
     }
 
-    public function addEvent($username, $title, $startDate, $allDay, $endDate, $startTime, $endTime)
+    public function getEvents($email)
+    {
+        $this->connectDB();
+
+        $sql="SELECT
+            intIDEvent AS id,
+            chrTitle AS title,
+            CONCAT(dtdStart, 'T',chrStartTime,':00') AS 'start',
+            CONCAT(dtdEnd, 'T',chrEndTime,':00') AS 'end',
+            intAllDay AS allDay
+        FROM tblevents
+        WHERE chrFKUserEmail = :email
+        AND intActivo = 1;";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $response = array(
+            'result'=> 'ok',
+            'message' => 'Event added.',
+            'events' => array()
+        );
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $row['allDay'] = $row['allDay'] == 1 ? true : false;
+            $response['events'][] = $row;
+        }
+        $this->conn = null;
+        return $response;
+    }
+
+    public function addEvent($email, $title, $startDate, $allDay, $endDate, $startTime, $endTime)
     {
         $this->connectDB();
 
         $sql="SELECT * FROM tblusers WHERE chrEmail = :email LIMIT 1;";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':email', $username, PDO::PARAM_STR);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
 
         $response = array();
@@ -100,7 +130,7 @@ class DAO
             VALUES
             (:email, :title, :startDate, :startTime, :endDate, :endTime, :allDay);";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':email', $username, PDO::PARAM_STR);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->bindParam(':title', $title, PDO::PARAM_STR);
             $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
             $stmt->bindParam(':startTime', $startTime, PDO::PARAM_STR);
