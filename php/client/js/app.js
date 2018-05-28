@@ -87,12 +87,14 @@ class EventsManager {
                     alert('Se ha añadido el evento exitosamente')
                     if (document.getElementById('allDay').checked) {
                         $('.calendario').fullCalendar('renderEvent', {
+                            id: data.id,
                             title: $('#titulo').val(),
                             start: $('#start_date').val(),
                             allDay: true
                         })
                     } else {
                         $('.calendario').fullCalendar('renderEvent', {
+                            id: data.id,
                             title: $('#titulo').val(),
                             start: $('#start_date').val() + " " + $('#start_hour').val(),
                             allDay: false,
@@ -124,11 +126,10 @@ class EventsManager {
                 if (data.result == "ok") {
                     alert('Se ha eliminado el evento exitosamente')
                 } else {
-                    alert(data.msg)
+                    alert(data.message)
                 }
             },
-            error: function(e) {
-                console.log(e);
+            error: function() {
                 alert("error en la comunicación con el servidor");
             }
         })
@@ -148,7 +149,7 @@ class EventsManager {
         start_hour = start.substr(11, 8)
         end_hour = end.substr(11, 8)
 
-        form_data.append('id', id)
+        form_data.append('eventID', id)
         form_data.append('start_date', start_date)
         form_data.append('end_date', end_date)
         form_data.append('start_hour', start_hour)
@@ -163,10 +164,10 @@ class EventsManager {
             data: form_data,
             type: 'POST',
             success: (data) => {
-                if (data.msg == "ok") {
+                if (data.result == "ok") {
                     alert('Se ha actualizado el evento exitosamente')
                 } else {
-                    alert(data.msg)
+                    alert(data.message)
                 }
             },
             error: function() {

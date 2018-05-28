@@ -1,5 +1,6 @@
 <?php
 session_start();
+include("formatter.php");
 require_once("DAO.php");
 $DAO = new DAO();
 
@@ -33,34 +34,5 @@ if ($allDay == 0 && !timeChecks($startTime, $endTime)) {
     exit;
 }
 
-$result = $DAO->addEvent($username, $title, $startDate, $allDay, $endDate, $startTime, $endTime);
+$result = $DAO->addEvent($username, $title, $startDate, $endDate, $startTime, $endTime, $allDay);
 echo json_encode($result);
-
-function isDate($date)
-{
-    return preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $date);
-}
-function isTime($time)
-{
-    return preg_match("#([0-1]{1}[0-9]{1}|[2]{1}[0-3]{1}):[0-5]{1}[0-9]{1}#", $time);
-}
-function dateChecks($startDate, $endDate)
-{
-    $startYear = substr($startDate, 0, 4);
-    $startMonth = substr($startDate, 5, 2);
-    $startDay = substr($startDate, 8, 2);
-    $endYear = substr($endDate, 0, 4);
-    $endMonth = substr($endDate, 5, 2);
-    $endDay = substr($endDate, 8, 2);
-
-    return   $startYear  < $endYear || ($startYear == $endYear && $startMonth  < $endMonth) || ($startYear == $endYear && $startMonth == $endMonth && $startDay < $endDay) || ($startYear == $endYear && $startMonth == $endMonth && $startDay == $endDay);
-}
-function timeChecks($startTime, $endTime)
-{
-    $startHrs = substr($startTime, 0, 2);
-    $startMins = substr($startTime, 3, 2);
-    $endHrs = substr($endTime, 0, 2);
-    $endMins = substr($endTime, 3, 2);
-
-    return $startHrs < $endHrs || ($startHrs == $endHrs && $startMins < $endMins);
-}

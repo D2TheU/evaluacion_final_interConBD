@@ -115,7 +115,7 @@ class DAO
         return $response;
     }
 
-    public function addEvent($email, $title, $startDate, $allDay, $endDate, $startTime, $endTime)
+    public function addEvent($email, $title, $startDate, $endDate, $startTime, $endTime, $allDay)
     {
         $this->connectDB();
 
@@ -126,21 +126,22 @@ class DAO
 
         $response = array();
         if ($stmt->rowCount()) {
-            $sql="INSERT INTO tblevents (chrFKUserEmail, chrTitle, dtdStart, chrStartTime, dtdEnd, chrEndTime, intAllDay)
+            $sql="INSERT INTO tblevents (chrTitle, chrFKUserEmail, dtdStart, dtdEnd, chrStartTime, chrEndTime, intAllDay)
             VALUES
-            (:email, :title, :startDate, :startTime, :endDate, :endTime, :allDay);";
+            (:title, :email, :startDate, :endDate, :startTime, :endTime, :allDay);";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
-            $stmt->bindParam(':startTime', $startTime, PDO::PARAM_STR);
             $stmt->bindParam(':endDate', $endDate, PDO::PARAM_STR);
+            $stmt->bindParam(':startTime', $startTime, PDO::PARAM_STR);
             $stmt->bindParam(':endTime', $endTime, PDO::PARAM_STR);
             $stmt->bindParam(':allDay', $allDay, PDO::PARAM_INT);
             $stmt->execute();
 
             $response = array(
                 'result'=> 'ok',
+                'id' => $this->conn->lastInsertId(),
                 'message' => 'Event added.'
             );
         } else {
@@ -153,10 +154,36 @@ class DAO
         return $response;
     }
 
+    public function updateEvent($email, $eventID, $startDate, $endDate, $startTime, $endTime)
+    {
+        $this->connectDB();
+
+        $sql="UPDATE tblevents
+        SET dtdStart = :startDate, chrStartTime = :startTime, dtdEnd = :endDate, chrEndTime = :endTime
+        WHERE intIDEvent = :eventID
+        AND chrFKUserEmail = :email;";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->bindParam(':eventID', $eventID, PDO::PARAM_INT);
+        $stmt->bindParam(':startDate', $startDate, PDO::PARAM_INT);
+        $stmt->bindParam(':endDate', $endDate, PDO::PARAM_INT);
+        $stmt->bindParam(':startTime', $startTime, PDO::PARAM_INT);
+        $stmt->bindParam(':endTime', $endTime, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $response = array(
+            'result'=> 'ok',
+            'message' => 'Event updated.'
+        );
+
+        $this->conn = null;
+        return $response;
+    }
+
     public function deleteEvent($email, $eventID)
     {
         $this->connectDB();
-        
+
         $sql="UPDATE tblevents
         SET intActivo = 0
         WHERE intIDEvent = :eventID
