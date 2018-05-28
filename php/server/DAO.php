@@ -152,4 +152,26 @@ class DAO
         $this->conn = null;
         return $response;
     }
+
+    public function deleteEvent($email, $eventID)
+    {
+        $this->connectDB();
+        
+        $sql="UPDATE tblevents
+        SET intActivo = 0
+        WHERE intIDEvent = :eventID
+        AND chrFKUserEmail = :email;";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->bindParam(':eventID', $eventID, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $response = array(
+            'result'=> 'ok',
+            'message' => 'Event deleted.'
+        );
+
+        $this->conn = null;
+        return $response;
+    }
 }

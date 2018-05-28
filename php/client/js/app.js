@@ -111,7 +111,7 @@ class EventsManager {
     }
     eliminarEvento(event, jsEvent) {
         var form_data = new FormData()
-        form_data.append('id', event.id)
+        form_data.append('eventID', event.id)
         $.ajax({
             url: '../server/delete_event.php',
             dataType: "json",
@@ -121,13 +121,14 @@ class EventsManager {
             data: form_data,
             type: 'POST',
             success: (data) => {
-                if (data.msg == "OK") {
+                if (data.result == "ok") {
                     alert('Se ha eliminado el evento exitosamente')
                 } else {
                     alert(data.msg)
                 }
             },
-            error: function() {
+            error: function(e) {
+                console.log(e);
                 alert("error en la comunicación con el servidor");
             }
         })
@@ -162,7 +163,7 @@ class EventsManager {
             data: form_data,
             type: 'POST',
             success: (data) => {
-                if (data.msg == "OK") {
+                if (data.msg == "ok") {
                     alert('Se ha actualizado el evento exitosamente')
                 } else {
                     alert(data.msg)
