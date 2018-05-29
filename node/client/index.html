@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="css/styles.css" />
         <link href="https://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Kaushan+Script|Neucha" rel="stylesheet">
+        <script src="js/checkSession.js"></script>
     </head>
 
     <body>
@@ -21,16 +22,22 @@
             </div>
         </div>
         <script src="js/jquery.js"></script>
-        <script>
-            var nombreUsuario = $('#user')
-            var pass = $('#pass')
+        <script type="text/javascript">
+            if (document.URL.indexOf("index.html") == -1) {
+                window.location.href = "http://localhost:3000/index.html"
+            }
+        </script>
+        <script type="text/javascript">
             $('.loginButton').on('click', function(event) {
-                if (nombreUsuario.val() != "" && pass.val() != "") {
+                var nombreUsuario = $('#user').val().trim()
+                var pass = $('#pass').val().trim()
+                if (nombreUsuario != "" && pass != "") {
                     $.post('/login', {
-                        user: nombreUsuario.val().trim(),
-                        pass: pass.val().trim()
+                        user: nombreUsuario,
+                        pass: pass
                     }, function(response) {
                         if (response == "Validado") {
+                            localStorage.setItem('email', nombreUsuario)
                             window.location.href = "http://localhost:3000/main.html"
                         } else {
                             alert(response)

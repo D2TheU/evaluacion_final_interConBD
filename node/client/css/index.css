@@ -170,6 +170,7 @@ input {
 }
 .logout-container {
     display: flex;
+    cursor: pointer;
 }
 .logout-image {
     margin-right: 6px;

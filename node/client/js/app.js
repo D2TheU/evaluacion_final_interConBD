@@ -124,11 +124,16 @@ const Manager = new EventManager()
 
 $(function() {
     initForm();
+    $('.logout-container').on('click', function(event) {
+        localStorage.removeItem('email');
+        window.location.href = "http://localhost:3000/index.html";
+    });
     // $('form').submit(function(event) {
     //     event.preventDefault()
     //     e.anadirEvento()
     // })
 });
+
 function initForm() {
     $('#start_date, #titulo, #end_date').val('');
     $('#start_date, #end_date').datepicker({
