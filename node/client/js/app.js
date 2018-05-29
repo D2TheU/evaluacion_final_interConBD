@@ -38,8 +38,8 @@ class EventManager {
                 end = $('#end_date').val()
                 start_hour = $('#start_hour').val()
                 end_hour = $('#end_hour').val()
-                start = start + 'T' + start_hour
-                end = end + 'T' + end_hour
+                start = start + 'T' + start_hour + '.000Z'
+                end = end + 'T' + end_hour + '.000Z'
                 allDay = 0
             }
             let url = this.urlBase + "/new"
@@ -61,6 +61,24 @@ class EventManager {
             } else {
                 alert("Complete los campos obligatorios para el evento")
             }
+        })
+    }
+
+    actualizarEvento(evento) {
+        let allDay = evento.allDay ? 1 : 0;
+
+        let url = this.urlBase + "/update"
+        let ev = {
+            id: evento.id,
+            email: localStorage.email,
+            title: evento.title,
+            start: moment(evento.start).format('YYYY-MM-DD') + 'T' + moment(evento.start).format('HH:mm:ss') + '.000Z',
+            end: moment(evento.end).format('YYYY-MM-DD') + 'T' + moment(evento.end).format('HH:mm:ss') + '.000Z',
+            allDay: allDay
+        }
+        console.log(ev);
+        $.post(url, ev, (response) => {
+            alert(response)
         })
     }
 
@@ -89,6 +107,7 @@ class EventManager {
         })
         $('#start_hour, #end_hour').val('');
         $('#allDay').attr("checked", false);
+        $('.timepicker, #end_date').removeAttr("disabled")
     }
 
     inicializarCalendario(eventos) {
@@ -125,6 +144,7 @@ class EventManager {
                     this.eliminarEvento(event)
                     $('.calendario').fullCalendar('removeEvents', event.id);
                 }
+                $('.delete').find('img').attr('src', "img/delete.png");
             }
         })
     }
@@ -133,7 +153,7 @@ class EventManager {
 const Manager = new EventManager()
 
 $(function() {
-    $('.logout-container').on('click', function(event) {
+    $('.logout-container').on('click', function() {
         localStorage.removeItem('email');
         window.location.href = "http://localhost:3000/index.html";
     });
