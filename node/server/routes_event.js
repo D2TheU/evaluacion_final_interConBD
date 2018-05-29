@@ -46,13 +46,8 @@ Router.post('/new', function(req, res) {
         let title = req.body.title
         let email = req.body.email
         let start = new Date(req.body.start)
-        let end = new Date(req.body.end)
+        let end = req.body.allDay == 1 ? new Date(req.body.start) : new Date(req.body.end);
         let allDay = req.body.allDay == 1 ? true : false;
-        // let title = "new Event"
-        // let email = "oasd"
-        // let start = new Date("2018-05-02T06:00")
-        // let end = new Date("2018-05-04T12:00")
-        // let allDay = 0 == 1 ? true : false;
 
         let event = new Events({
             intIDEvent: eventID,
@@ -62,17 +57,16 @@ Router.post('/new', function(req, res) {
             dtdEnd: end,
             boolAllDay: allDay
         })
-        res.json(event)
-        // event.save(function(error) {
-        //     if (error) {
-        //         res.status(500)
-        //         res.json(error)
-        //     } else {
-        //         res.json({
-        //             'id': eventID
-        //         });
-        //     }
-        // })
+        event.save(function(error) {
+            if (error) {
+                res.status(500)
+                res.json(error)
+            } else {
+                res.json({
+                    'id': eventID
+                });
+            }
+        })
     })
 })
 // // Obtener un usuario por su nombre

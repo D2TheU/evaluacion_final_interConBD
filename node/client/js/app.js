@@ -3,7 +3,7 @@ class EventManager {
         this.urlBase = "/events"
         this.obtenerDataInicial()
         this.inicializarFormulario()
-        // this.guardarEvento()
+        this.guardarEvento()
     }
 
     obtenerDataInicial() {
@@ -31,7 +31,7 @@ class EventManager {
                 end = '',
                 start_hour = '',
                 end_hour = '';
-            var allDay = 0;
+            var allDay = 1;
 
             if (!$('#allDay').is(':checked')) {
                 end = $('#end_date').val()
@@ -39,7 +39,7 @@ class EventManager {
                 end_hour = $('#end_hour').val()
                 start = start + 'T' + start_hour
                 end = end + 'T' + end_hour
-                allDay = 1
+                allDay = 0
             }
             let url = this.urlBase + "/new"
             if (title != "" && start != "") {
@@ -48,12 +48,14 @@ class EventManager {
                     title: title,
                     start: start,
                     end: end,
-                    allDay: allday
+                    allDay: allDay
                 }
                 $.post(url, ev, (response) => {
-                    alert(response)
+                    if (response.id != null) {
+                        ev['id'] = response.id;
+                        $('.calendario').fullCalendar('renderEvent', ev)
+                    }
                 })
-                $('.calendario').fullCalendar('renderEvent', ev)
             } else {
                 alert("Complete los campos obligatorios para el evento")
             }
