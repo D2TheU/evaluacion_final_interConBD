@@ -76,7 +76,6 @@ class EventManager {
             end: moment(evento.end).format('YYYY-MM-DD') + 'T' + moment(evento.end).format('HH:mm:ss') + '.000Z',
             allDay: allDay
         }
-        console.log(ev);
         $.post(url, ev, (response) => {
             alert(response)
         })
