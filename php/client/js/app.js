@@ -208,5 +208,6 @@ function initForm() {
             $('.timepicker, #end_date').removeAttr("disabled")
         }
     })
+    $('.timepicker, #end_date').removeAttr("disabled")
     $('#start_hour, #end_hour').val('')
 }
