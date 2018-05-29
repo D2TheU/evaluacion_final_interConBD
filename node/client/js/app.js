@@ -7,7 +7,7 @@ class EventManager {
     }
 
     obtenerDataInicial() {
-        let url = this.urlBase + "/all/"+localStorage.email
+        let url = this.urlBase + "/all/" + localStorage.email
         $.get(url, (response) => {
             this.inicializarCalendario(response)
         })
@@ -15,8 +15,9 @@ class EventManager {
 
     eliminarEvento(evento) {
         let eventId = evento.id
-        $.post('/events/delete/' + eventId, {
-            id: eventId
+        $.post('/events/delete/', {
+            id: eventId,
+            email: localStorage.email
         }, (response) => {
             alert(response)
         })
@@ -54,6 +55,7 @@ class EventManager {
                     if (response.id != null) {
                         ev['id'] = response.id;
                         $('.calendario').fullCalendar('renderEvent', ev)
+                        this.inicializarFormulario()
                     }
                 })
             } else {
@@ -85,6 +87,8 @@ class EventManager {
                 $('.timepicker, #end_date').removeAttr("disabled")
             }
         })
+        $('#start_hour, #end_hour').val('');
+        $('#allDay').attr("checked", false);
     }
 
     inicializarCalendario(eventos) {

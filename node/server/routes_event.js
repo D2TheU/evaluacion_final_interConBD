@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Router = require('express').Router();
 const Events = require('./model_event.js');
 //Obtener todos los usuarios
@@ -15,8 +16,9 @@ Router.get('/all/:email', function(req, res) {
                 var tempEvent = {};
                 for (var key in docs[i]) {
                     switch (key) {
-                        case 'intIDEvent':
-                            tempEvent['id'] = docs[i]['intIDEvent']
+                        case '_id':
+                            tempEvent['id'] = docs[i]['_id'].toString()
+                            tempEvent['idtype'] = typeof(docs[i]['_id'])
                             break;
                         case 'chrTitle':
                             tempEvent['title'] = docs[i]['chrTitle']
@@ -42,7 +44,6 @@ Router.get('/all/:email', function(req, res) {
 // Agregar evento
 Router.post('/new', function(req, res) {
     Events.count({}, function(err, c) {
-        let eventID = c + 1;
         let title = req.body.title
         let email = req.body.email
         let start = new Date(req.body.start)
@@ -50,68 +51,38 @@ Router.post('/new', function(req, res) {
         let allDay = req.body.allDay == 1 ? true : false;
 
         let event = new Events({
-            intIDEvent: eventID,
             chrTitle: title,
             chrFKUserEmail: email,
             dtdStart: start,
             dtdEnd: end,
             boolAllDay: allDay
         })
-        event.save(function(error) {
+        event.save(function(error, room) {
             if (error) {
                 res.status(500)
                 res.json(error)
             } else {
                 res.json({
-                    'id': eventID
+                    'id': room.id
                 });
             }
         })
     })
 })
-// // Obtener un usuario por su nombre
-// Router.get('/', function(req, res) {
-//     let nombre = req.query.nombre
-//     Users.findOne({
-//         nombres: nombre
-//     }).exec(function(err, doc) {
-//         if (err) {
-//             res.status(500)
-//             res.json(err)
-//         }
-//         res.json(doc)
-//     })
-// })
-// // Agregar a un usuario
-// Router.post('/new', function(req, res) {
-//     let user = new Users({
-//         userId: Math.floor(Math.random() * 50),
-//         nombres: req.body.nombres,
-//         apellidos: req.body.apellidos,
-//         edad: req.body.edad,
-//         sexo: req.body.sexo,
-//         estado: "Activo"
-//     })
-//     user.save(function(error) {
-//         if (error) {
-//             res.status(500)
-//             res.json(error)
-//         }
-//         res.send("Registro guardado")
-//     })
-// })
-// // Eliminar un usuario por su id
-// Router.get('/delete/:id', function(req, res) {
-//     let uid = req.params.id
-//     Users.remove({
-//         userId: uid
-//     }, function(error) {
-//         if (error) {
-//             res.status(500)
-//             res.json(error)
-//         }
-//         res.send("Registro eliminado")
-//     })
-// })
+// Eliminar evento por su id/email
+Router.post('/delete', function(req, res) {
+    let eventID = req.body.id
+    let email = req.body.email
+    Events.remove({
+        _id: mongoose.Types.ObjectId(eventID),
+        chrFKUserEmail: email
+    }, function(error) {
+        if (error) {
+            res.status(500)
+            res.json(error)
+        }
+        res.send("Evento eliminado.")
+    })
+})
 
 module.exports = Router;
