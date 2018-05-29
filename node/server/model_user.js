@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let UserSchema = new Schema({
+let UsersSchema = new Schema({
     chrEmail: {
         type: String,
         required: true,
@@ -20,5 +20,5 @@ let UserSchema = new Schema({
         required: true
     }
 })
-let UserModel = mongoose.model('user', UserSchema);
-module.exports = UserModel;
+let UsersModel = mongoose.model('users', UsersSchema);
+module.exports = UsersModel;
