@@ -1,6 +1,6 @@
 const http = require('http');
 const path = require('path');
-// const RoutingEvents = require('./routes_event.js');
+const RoutingEvents = require('./routes_event.js');
 const RoutingLogin = require('./routes_login.js');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-// app.use('/events', RoutingEvents);
+app.use('/events', RoutingEvents);
 app.use('/login', RoutingLogin);
 
 Server.listen(PORT, function() {

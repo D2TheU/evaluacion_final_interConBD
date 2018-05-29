@@ -1,13 +1,13 @@
 class EventManager {
     constructor() {
-        // this.urlBase = "/events"
-        // this.obtenerDataInicial()
-        // this.inicializarFormulario()
+        this.urlBase = "/events"
+        this.obtenerDataInicial()
+        this.inicializarFormulario()
         // this.guardarEvento()
     }
 
     obtenerDataInicial() {
-        let url = this.urlBase + "/all"
+        let url = this.urlBase + "/all/"+localStorage.email
         $.get(url, (response) => {
             this.inicializarCalendario(response)
         })
@@ -31,6 +31,7 @@ class EventManager {
                 end = '',
                 start_hour = '',
                 end_hour = '';
+            var allDay = 0;
 
             if (!$('#allDay').is(':checked')) {
                 end = $('#end_date').val()
@@ -38,13 +39,16 @@ class EventManager {
                 end_hour = $('#end_hour').val()
                 start = start + 'T' + start_hour
                 end = end + 'T' + end_hour
+                allDay = 1
             }
             let url = this.urlBase + "/new"
             if (title != "" && start != "") {
                 let ev = {
+                    email: localStorage.email,
                     title: title,
                     start: start,
-                    end: end
+                    end: end,
+                    allDay: allday
                 }
                 $.post(url, ev, (response) => {
                     alert(response)
@@ -88,7 +92,7 @@ class EventManager {
                 center: 'title',
                 right: 'month,agendaWeek,basicDay'
             },
-            defaultDate: '2016-11-01',
+            defaultDate: new Date(),
             navLinks: true,
             editable: true,
             eventLimit: true,
@@ -123,39 +127,8 @@ class EventManager {
 const Manager = new EventManager()
 
 $(function() {
-    initForm();
     $('.logout-container').on('click', function(event) {
         localStorage.removeItem('email');
         window.location.href = "http://localhost:3000/index.html";
     });
-    // $('form').submit(function(event) {
-    //     event.preventDefault()
-    //     e.anadirEvento()
-    // })
 });
-
-function initForm() {
-    $('#start_date, #titulo, #end_date').val('');
-    $('#start_date, #end_date').datepicker({
-        dateFormat: "yy-mm-dd"
-    });
-    $('.timepicker').timepicker({
-        timeFormat: 'HH:mm',
-        interval: 30,
-        minTime: '5',
-        maxTime: '23:30',
-        defaultTime: '7',
-        startTime: '5:00',
-        dynamic: false,
-        dropdown: true,
-        scrollbar: true
-    });
-    $('#allDay').on('change', function() {
-        if (this.checked) {
-            $('.timepicker, #end_date').attr("disabled", "disabled")
-        } else {
-            $('.timepicker, #end_date').removeAttr("disabled")
-        }
-    })
-    $('#start_hour, #end_hour').val('')
-}

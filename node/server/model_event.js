@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let EventSchema = new Schema({
+let EventsSchema = new Schema({
     intIDEvent: {
         type: Number,
         required: true,
@@ -22,18 +22,10 @@ let EventSchema = new Schema({
     dtdEnd: {
         type: Date
     },
-    chrStartTime: {
-        type: String,
-        required: true
-    },
-    chrEndTime: {
-        type: String,
-        required: true
-    },
-    intAllDay: {
+    boolAllDay: {
         type: Boolean,
         required: true
     }
 })
-let EventModel = mongoose.model('event', EventSchema);
-module.exports = EventModel;
+let EventsModel = mongoose.model('events', EventsSchema);
+module.exports = EventsModel;
